@@ -2,17 +2,29 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Download } from 'lucide-react';
+import { Download, Home, LogOut } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useNavigate } from 'react-router-dom';
+import * as XLSX from 'xlsx';
 import SubmissionsTable from '@/components/admin/SubmissionsTable';
 import MetricsCards from '@/components/admin/MetricsCards';
 import ChartsSection from '@/components/admin/ChartsSection';
+import AdminLogin from '@/components/admin/AdminLogin';
 import { SchoolCensusSubmission } from '@/types/school';
+import schoolsData from '@/data/schools.json';
 
 const AdminDashboard = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [submissions, setSubmissions] = useState<SchoolCensusSubmission[]>([]);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // Verificar autenticação
+  useEffect(() => {
+    const adminAuth = localStorage.getItem('adminAuthenticated');
+    setIsAuthenticated(adminAuth === 'true');
+  }, []);
 
   // Carregar dados do localStorage quando o componente for montado
   useEffect(() => {
@@ -126,21 +138,100 @@ const AdminDashboard = () => {
     }
   ];
 
+  const totalSchools = schoolsData.length;
+  const submittedSchools = submissions.length;
+  const pendingSchools = totalSchools - submittedSchools;
+
   const handleExportCSV = () => {
-    // Simulação de exportação CSV
-    toast({
-      title: "Exportação CSV",
-      description: "Arquivo CSV foi gerado e o download iniciará em breve.",
-    });
+    try {
+      const csvData = submissions.map(sub => ({
+        'Nome da Escola': sub.selectedSchool?.name,
+        'INEP': sub.selectedSchool?.inep,
+        'Salas de Aula': sub.classroomsCount,
+        'Modalidades': sub.teachingModalities.join(', '),
+        'Chromebooks': sub.technology.chromebooks,
+        'Notebooks': sub.technology.notebooks,
+        'Kits Robótica': sub.technology.roboticsKits,
+        'Modems': sub.technology.modems,
+        'Impressoras': sub.technology.printers,
+        'Modems Defeituosos': sub.technology.defectiveModems,
+        'Internet na Escola': sub.technology.hasSchoolInternet ? 'Sim' : 'Não',
+        'Submetido por': sub.submittedBy,
+        'Data de Submissão': sub.submittedAt.toLocaleDateString('pt-BR')
+      }));
+
+      const ws = XLSX.utils.json_to_sheet(csvData);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Censo Escolar');
+      
+      XLSX.writeFile(wb, `censo-escolar-${new Date().toISOString().split('T')[0]}.csv`);
+      
+      toast({
+        title: "Exportação CSV",
+        description: "Arquivo CSV foi baixado com sucesso!",
+      });
+    } catch (error) {
+      toast({
+        title: "Erro na exportação",
+        description: "Não foi possível gerar o arquivo CSV.",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleExportXLS = () => {
-    // Simulação de exportação XLS
+    try {
+      const xlsData = submissions.map(sub => ({
+        'Nome da Escola': sub.selectedSchool?.name,
+        'INEP': sub.selectedSchool?.inep,
+        'Salas de Aula': sub.classroomsCount,
+        'Modalidades': sub.teachingModalities.join(', '),
+        'Chromebooks': sub.technology.chromebooks,
+        'Notebooks': sub.technology.notebooks,
+        'Kits Robótica': sub.technology.roboticsKits,
+        'Modems': sub.technology.modems,
+        'Impressoras': sub.technology.printers,
+        'Modems Defeituosos': sub.technology.defectiveModems,
+        'Internet na Escola': sub.technology.hasSchoolInternet ? 'Sim' : 'Não',
+        'Submetido por': sub.submittedBy,
+        'Data de Submissão': sub.submittedAt.toLocaleDateString('pt-BR')
+      }));
+
+      const ws = XLSX.utils.json_to_sheet(xlsData);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Censo Escolar');
+      
+      XLSX.writeFile(wb, `censo-escolar-${new Date().toISOString().split('T')[0]}.xlsx`);
+      
+      toast({
+        title: "Exportação Excel",
+        description: "Arquivo Excel foi baixado com sucesso!",
+      });
+    } catch (error) {
+      toast({
+        title: "Erro na exportação",
+        description: "Não foi possível gerar o arquivo Excel.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('adminAuthenticated');
+    setIsAuthenticated(false);
     toast({
-      title: "Exportação XLS",
-      description: "Arquivo Excel foi gerado e o download iniciará em breve.",
+      title: "Logout realizado",
+      description: "Você foi desconectado com sucesso.",
     });
   };
+
+  const handleGoHome = () => {
+    navigate('/');
+  };
+
+  if (!isAuthenticated) {
+    return <AdminLogin onLogin={() => setIsAuthenticated(true)} />;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -150,15 +241,34 @@ const AdminDashboard = () => {
             <div>
               <h1 className="text-3xl font-bold text-gray-900">Painel Administrativo</h1>
               <p className="text-gray-600 mt-1">Dashboard do Censo Escolar</p>
+              <div className="flex gap-4 mt-2 text-sm">
+                <span className="text-green-600 font-medium">
+                  Escolas enviadas: {submittedSchools}
+                </span>
+                <span className="text-orange-600 font-medium">
+                  Escolas pendentes: {pendingSchools}
+                </span>
+                <span className="text-blue-600 font-medium">
+                  Total de escolas: {totalSchools}
+                </span>
+              </div>
             </div>
             <div className="flex gap-3">
+              <Button onClick={handleGoHome} variant="outline">
+                <Home className="mr-2 w-4 h-4" />
+                Início
+              </Button>
               <Button onClick={handleExportCSV} variant="outline">
                 <Download className="mr-2 w-4 h-4" />
                 Exportar CSV
               </Button>
               <Button onClick={handleExportXLS}>
                 <Download className="mr-2 w-4 h-4" />
-                Exportar XLS
+                Exportar Excel
+              </Button>
+              <Button onClick={handleLogout} variant="destructive">
+                <LogOut className="mr-2 w-4 h-4" />
+                Sair
               </Button>
             </div>
           </div>

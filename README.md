@@ -1,8 +1,57 @@
+
 # Welcome to your Lovable project
 
 ## Project info
 
 **URL**: https://lovable.dev/projects/4acff380-6f2a-4580-ae80-567d51af7c90
+
+## Como adicionar escolas ao sistema
+
+Para adicionar mais escolas ao sistema de censo escolar:
+
+1. **Localizar o arquivo de escolas**: O arquivo está em `src/data/schools.json`
+
+2. **Formato do arquivo**: Cada escola deve seguir o formato:
+```json
+{
+  "name": "Nome da Escola",
+  "inep": "12345678"
+}
+```
+
+3. **Exemplo de como adicionar escolas**:
+```json
+[
+  {
+    "name": "Escola Municipal João Silva",
+    "inep": "23456789"
+  },
+  {
+    "name": "Escola Estadual Maria Santos", 
+    "inep": "34567890"
+  },
+  {
+    "name": "Nova Escola Adicionada",
+    "inep": "99887766"
+  }
+]
+```
+
+4. **Para uso offline**: 
+   - Edite o arquivo `src/data/schools.json` diretamente
+   - Adicione quantas escolas precisar seguindo o formato acima
+   - O sistema automaticamente calculará quantas escolas faltam ser preenchidas
+   - Reinicie a aplicação após as alterações
+
+5. **Informações importantes**:
+   - O código INEP deve ser único para cada escola
+   - O nome da escola aparecerá no formulário de censo
+   - O painel administrativo mostra automaticamente quantas escolas ainda faltam ser cadastradas
+
+## Credenciais de acesso ao painel administrativo
+
+- **Usuário**: admin
+- **Senha**: admin123
 
 ## How can I edit this code?
 

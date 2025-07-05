@@ -8,9 +8,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { SchoolCensusForm as FormType, Classroom, Technology, SchoolCensusSubmission } from "@/types/school";
 import schoolsData from "@/data/schools.json";
+import { useNavigate } from "react-router-dom";
+import { Home } from "lucide-react";
 
-const SchoolCensusFormPage = () => {
+const SchoolCensusForm = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   
   const [formData, setFormData] = useState<FormType>({
     selectedSchool: null,
@@ -85,6 +88,10 @@ const SchoolCensusFormPage = () => {
     }));
   };
 
+  const handleGoHome = () => {
+    navigate('/');
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -136,9 +143,20 @@ const SchoolCensusFormPage = () => {
   };
 
   return (
-    <div className="container mx-auto py-8 space-y-8">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Formulário de Censo Escolar</h1>
+    <div className="min-h-screen bg-gray-50">
+      <div className="bg-white shadow-sm border-b">
+        <div className="container mx-auto px-4 py-6">
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">Censo Escolar</h1>
+              <p className="text-gray-600 mt-1">Cadastro de informações das escolas</p>
+            </div>
+            <Button onClick={handleGoHome} variant="outline">
+              <Home className="mr-2 w-4 h-4" />
+              Início
+            </Button>
+          </div>
+        </div>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-8">
@@ -390,4 +408,4 @@ const SchoolCensusFormPage = () => {
   );
 };
 
-export default SchoolCensusFormPage;
+export default SchoolCensusForm;
