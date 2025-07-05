@@ -1,8 +1,9 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Download, Home, LogOut } from 'lucide-react';
+import { Download, Home, LogOut, Settings, Edit, Layout } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 import * as XLSX from 'xlsx';
@@ -10,6 +11,8 @@ import SubmissionsTable from '@/components/admin/SubmissionsTable';
 import MetricsCards from '@/components/admin/MetricsCards';
 import ChartsSection from '@/components/admin/ChartsSection';
 import AdminLogin from '@/components/admin/AdminLogin';
+import HomeCustomizer from '@/components/admin/HomeCustomizer';
+import FormBuilder from '@/components/admin/FormBuilder';
 import { SchoolCensusSubmission } from '@/types/school';
 import schoolsData from '@/data/schools.json';
 
@@ -277,9 +280,20 @@ const AdminDashboard = () => {
 
       <div className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-5">
+            <TabsTrigger value="dashboard">
+              <Settings className="mr-2 w-4 h-4" />
+              Dashboard
+            </TabsTrigger>
             <TabsTrigger value="submissions">Submissões</TabsTrigger>
+            <TabsTrigger value="form-builder">
+              <Edit className="mr-2 w-4 h-4" />
+              Editor de Formulário
+            </TabsTrigger>
+            <TabsTrigger value="home-customizer">
+              <Layout className="mr-2 w-4 h-4" />
+              Editor da Home
+            </TabsTrigger>
             <TabsTrigger value="reports">Relatórios</TabsTrigger>
           </TabsList>
 
@@ -292,6 +306,14 @@ const AdminDashboard = () => {
 
           <TabsContent value="submissions" className="mt-6">
             <SubmissionsTable submissions={submissions} />
+          </TabsContent>
+
+          <TabsContent value="form-builder" className="mt-6">
+            <FormBuilder />
+          </TabsContent>
+
+          <TabsContent value="home-customizer" className="mt-6">
+            <HomeCustomizer />
           </TabsContent>
 
           <TabsContent value="reports" className="mt-6">

@@ -1,18 +1,69 @@
+
 import React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { Facebook, Instagram, Twitter, Youtube } from "lucide-react";
 
 const Index = () => {
   const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      {/* Header com Logo */}
+      <header className="bg-white shadow-sm">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-center">
+            <img 
+              src="/placeholder.svg" 
+              alt="Logo da Prefeitura" 
+              className="h-16 w-auto"
+            />
+            <div className="ml-4">
+              <h1 className="text-2xl font-bold text-gray-900">Prefeitura Municipal</h1>
+              <p className="text-sm text-gray-600">Secretaria de Educação</p>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Hero Banner */}
+      <section className="relative bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-20">
+        <div className="absolute inset-0 bg-black opacity-20"></div>
+        <div className="relative container mx-auto px-4 text-center">
+          <h1 className="text-4xl md:text-6xl font-bold mb-6">
+            Censo Escolar 2024
+          </h1>
+          <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">
+            Participe do levantamento oficial das informações educacionais. 
+            Sua escola faz a diferença na construção de políticas públicas eficazes.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button 
+              onClick={() => navigate("/censo-escolar")} 
+              size="lg"
+              className="bg-white text-blue-600 hover:bg-gray-100"
+            >
+              Começar Agora
+            </Button>
+            <Button 
+              onClick={() => navigate("/admin")} 
+              size="lg"
+              variant="outline"
+              className="border-white text-white hover:bg-white hover:text-blue-600"
+            >
+              Acesso Administrativo
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Conteúdo Principal */}
       <div className="container mx-auto py-16 px-4">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">
             Sistema de Censo Escolar
-          </h1>
+          </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Plataforma para cadastro e gestão das informações do censo escolar das unidades educacionais
           </p>
@@ -101,6 +152,50 @@ const Index = () => {
           </Card>
         </div>
       </div>
+
+      {/* Footer */}
+      <footer className="bg-gray-800 text-white py-12">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Prefeitura Municipal</h3>
+              <p className="text-gray-300 text-sm">
+                Secretaria de Educação comprometida com a qualidade do ensino público municipal.
+              </p>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Links Úteis</h3>
+              <ul className="space-y-2 text-sm text-gray-300">
+                <li><a href="#" className="hover:text-white">Portal da Transparência</a></li>
+                <li><a href="#" className="hover:text-white">Secretaria de Educação</a></li>
+                <li><a href="#" className="hover:text-white">Ouvidoria</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Redes Sociais</h3>
+              <div className="flex space-x-4">
+                <a href="#" className="text-gray-300 hover:text-white">
+                  <Facebook className="h-6 w-6" />
+                </a>
+                <a href="#" className="text-gray-300 hover:text-white">
+                  <Instagram className="h-6 w-6" />
+                </a>
+                <a href="#" className="text-gray-300 hover:text-white">
+                  <Twitter className="h-6 w-6" />
+                </a>
+                <a href="#" className="text-gray-300 hover:text-white">
+                  <Youtube className="h-6 w-6" />
+                </a>
+              </div>
+            </div>
+          </div>
+          <div className="border-t border-gray-700 mt-8 pt-8 text-center">
+            <p className="text-sm text-gray-400">
+              © 2024 Prefeitura Municipal. Todos os direitos reservados.
+            </p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
