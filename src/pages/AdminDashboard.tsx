@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -13,9 +12,50 @@ import { SchoolCensusSubmission } from '@/types/school';
 const AdminDashboard = () => {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [submissions, setSubmissions] = useState<SchoolCensusSubmission[]>([]);
 
-  // Mock data - em um app real viria do backend
-  const mockSubmissions: SchoolCensusSubmission[] = [
+  // Carregar dados do localStorage quando o componente for montado
+  useEffect(() => {
+    const loadSubmissions = () => {
+      try {
+        const savedSubmissions = localStorage.getItem('schoolCensusSubmissions');
+        if (savedSubmissions) {
+          const parsedSubmissions = JSON.parse(savedSubmissions);
+          // Converter strings de data de volta para objetos Date
+          const submissionsWithDates = parsedSubmissions.map((sub: any) => ({
+            ...sub,
+            submittedAt: new Date(sub.submittedAt)
+          }));
+          setSubmissions(submissionsWithDates);
+        } else {
+          // Dados mock apenas se não houver dados salvos
+          setSubmissions(getMockData());
+        }
+      } catch (error) {
+        console.error('Erro ao carregar submissões:', error);
+        setSubmissions(getMockData());
+      }
+    };
+
+    loadSubmissions();
+
+    // Escutar mudanças no localStorage para atualizar em tempo real
+    const handleStorageChange = () => {
+      loadSubmissions();
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Também verificar periodicamente por mudanças (para mudanças na mesma aba)
+    const interval = setInterval(loadSubmissions, 1000);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      clearInterval(interval);
+    };
+  }, []);
+
+  const getMockData = (): SchoolCensusSubmission[] => [
     {
       id: '1',
       selectedSchool: { name: 'Escola Municipal João Silva', inep: '23456789' },
@@ -135,13 +175,13 @@ const AdminDashboard = () => {
 
           <TabsContent value="dashboard" className="mt-6">
             <div className="space-y-6">
-              <MetricsCards submissions={mockSubmissions} />
-              <ChartsSection submissions={mockSubmissions} />
+              <MetricsCards submissions={submissions} />
+              <ChartsSection submissions={submissions} />
             </div>
           </TabsContent>
 
           <TabsContent value="submissions" className="mt-6">
-            <SubmissionsTable submissions={mockSubmissions} />
+            <SubmissionsTable submissions={submissions} />
           </TabsContent>
 
           <TabsContent value="reports" className="mt-6">

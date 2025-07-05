@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { SchoolCensusForm as FormType, Classroom, Technology } from "@/types/school";
+import { SchoolCensusForm as FormType, Classroom, Technology, SchoolCensusSubmission } from "@/types/school";
 import schoolsData from "@/data/schools.json";
 
 const SchoolCensusFormPage = () => {
@@ -98,12 +97,41 @@ const SchoolCensusFormPage = () => {
       return;
     }
 
-    // Aqui você salvaria os dados no backend/localStorage
+    // Criar uma nova submissão com ID único
+    const newSubmission: SchoolCensusSubmission = {
+      ...formData,
+      id: Date.now().toString(),
+      submittedAt: new Date(),
+      submittedBy: 'Usuário Atual' // Em um app real, viria do sistema de autenticação
+    };
+
+    // Salvar no localStorage
+    const existingSubmissions = JSON.parse(localStorage.getItem('schoolCensusSubmissions') || '[]');
+    const updatedSubmissions = [...existingSubmissions, newSubmission];
+    localStorage.setItem('schoolCensusSubmissions', JSON.stringify(updatedSubmissions));
+    
     console.log("Dados do formulário:", formData);
     
     toast({
       title: "Sucesso!",
       description: "Censo escolar cadastrado com sucesso.",
+    });
+
+    // Limpar o formulário após o envio
+    setFormData({
+      selectedSchool: null,
+      classroomsCount: 0,
+      classrooms: [],
+      teachingModalities: [],
+      technology: {
+        roboticsKits: 0,
+        chromebooks: 0,
+        notebooks: 0,
+        modems: 0,
+        printers: 0,
+        defectiveModems: 0,
+        hasSchoolInternet: false
+      }
     });
   };
 
