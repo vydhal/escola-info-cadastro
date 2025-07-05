@@ -1,0 +1,23 @@
+
+[
+  {
+    "name": "Escola Municipal João Silva",
+    "inep": "23456789"
+  },
+  {
+    "name": "Escola Estadual Maria Santos",
+    "inep": "34567890"
+  },
+  {
+    "name": "EMEF Pedro Alvares",
+    "inep": "45678901"
+  },
+  {
+    "name": "Colégio Municipal Ana Costa",
+    "inep": "56789012"
+  },
+  {
+    "name": "Escola Rural São José",
+    "inep": "67890123"
+  }
+]
