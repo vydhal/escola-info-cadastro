@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -59,12 +58,11 @@ const Index = () => {
                 <li>• Relatórios consolidados</li>
               </ul>
               <Button 
-                variant="outline" 
+                onClick={() => navigate("/admin")}
                 className="w-full" 
                 size="lg"
-                disabled
               >
-                Painel Admin (Em breve)
+                Acessar Painel Admin
               </Button>
             </CardContent>
           </Card>
