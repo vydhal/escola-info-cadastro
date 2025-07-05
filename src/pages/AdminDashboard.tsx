@@ -3,25 +3,55 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-import { Download, School, Users, Monitor, Wifi } from 'lucide-react';
+import { Download } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import SubmissionsTable from '@/components/admin/SubmissionsTable';
 import MetricsCards from '@/components/admin/MetricsCards';
 import ChartsSection from '@/components/admin/ChartsSection';
+import { SchoolCensusSubmission } from '@/types/school';
 
 const AdminDashboard = () => {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState('dashboard');
 
   // Mock data - em um app real viria do backend
-  const mockSubmissions = [
+  const mockSubmissions: SchoolCensusSubmission[] = [
     {
       id: '1',
       selectedSchool: { name: 'Escola Municipal João Silva', inep: '23456789' },
       classroomsCount: 5,
+      classrooms: [
+        {
+          id: '1',
+          outlets: 4,
+          tvs: 1,
+          hasInternet: true,
+          chairs: 30,
+          studentCapacity: 25,
+          hasAirConditioning: false,
+          fans: 2
+        },
+        {
+          id: '2',
+          outlets: 6,
+          tvs: 1,
+          hasInternet: true,
+          chairs: 35,
+          studentCapacity: 30,
+          hasAirConditioning: true,
+          fans: 0
+        }
+      ],
       teachingModalities: ['Anos iniciais', 'Anos Finais'],
-      technology: { roboticsKits: 2, chromebooks: 15, notebooks: 8 },
+      technology: { 
+        roboticsKits: 2, 
+        chromebooks: 15, 
+        notebooks: 8,
+        modems: 3,
+        printers: 2,
+        defectiveModems: 1,
+        hasSchoolInternet: true
+      },
       submittedAt: new Date('2024-01-15'),
       submittedBy: 'Maria Santos'
     },
@@ -29,8 +59,28 @@ const AdminDashboard = () => {
       id: '2',
       selectedSchool: { name: 'Escola Estadual Maria Santos', inep: '34567890' },
       classroomsCount: 8,
+      classrooms: [
+        {
+          id: '1',
+          outlets: 8,
+          tvs: 2,
+          hasInternet: true,
+          chairs: 40,
+          studentCapacity: 35,
+          hasAirConditioning: true,
+          fans: 0
+        }
+      ],
       teachingModalities: ['Anos iniciais', 'Anos Finais', 'EJA'],
-      technology: { roboticsKits: 1, chromebooks: 20, notebooks: 12 },
+      technology: { 
+        roboticsKits: 1, 
+        chromebooks: 20, 
+        notebooks: 12,
+        modems: 5,
+        printers: 3,
+        defectiveModems: 0,
+        hasSchoolInternet: true
+      },
       submittedAt: new Date('2024-01-16'),
       submittedBy: 'João Silva'
     }
