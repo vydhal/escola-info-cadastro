@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -7,6 +7,46 @@ import { Facebook, Instagram, Twitter, Youtube } from "lucide-react";
 
 const Index = () => {
   const navigate = useNavigate();
+  const [config, setConfig] = useState({
+    logo: '/placeholder.svg',
+    prefeituraNome: 'Prefeitura Municipal',
+    secretaria: 'Secretaria de Educação',
+    heroTitle: 'Censo Escolar 2024',
+    heroDescription: 'Participe do levantamento oficial das informações educacionais. Sua escola faz a diferença na construção de políticas públicas eficazes.',
+    copyright: '© 2024 Prefeitura Municipal. Todos os direitos reservados.',
+    facebookUrl: '#',
+    instagramUrl: '#',
+    twitterUrl: '#',
+    youtubeUrl: '#'
+  });
+
+  useEffect(() => {
+    // Carregar configurações salvas
+    const loadConfig = () => {
+      const savedConfig = localStorage.getItem('homeCustomization');
+      if (savedConfig) {
+        try {
+          const parsedConfig = JSON.parse(savedConfig);
+          setConfig(parsedConfig);
+        } catch (error) {
+          console.error('Erro ao carregar configurações da home:', error);
+        }
+      }
+    };
+
+    loadConfig();
+
+    // Escutar mudanças nas configurações
+    const handleConfigUpdate = (event: CustomEvent) => {
+      setConfig(event.detail);
+    };
+
+    window.addEventListener('homeConfigUpdated', handleConfigUpdate as EventListener);
+    
+    return () => {
+      window.removeEventListener('homeConfigUpdated', handleConfigUpdate as EventListener);
+    };
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
@@ -15,13 +55,13 @@ const Index = () => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-center">
             <img 
-              src="/placeholder.svg" 
+              src={config.logo} 
               alt="Logo da Prefeitura" 
               className="h-16 w-auto"
             />
             <div className="ml-4">
-              <h1 className="text-2xl font-bold text-gray-900">Prefeitura Municipal</h1>
-              <p className="text-sm text-gray-600">Secretaria de Educação</p>
+              <h1 className="text-2xl font-bold text-gray-900">{config.prefeituraNome}</h1>
+              <p className="text-sm text-gray-600">{config.secretaria}</p>
             </div>
           </div>
         </div>
@@ -32,11 +72,10 @@ const Index = () => {
         <div className="absolute inset-0 bg-black opacity-20"></div>
         <div className="relative container mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-6xl font-bold mb-6">
-            Censo Escolar 2024
+            {config.heroTitle}
           </h1>
           <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">
-            Participe do levantamento oficial das informações educacionais. 
-            Sua escola faz a diferença na construção de políticas públicas eficazes.
+            {config.heroDescription}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button 
@@ -158,9 +197,9 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
-              <h3 className="text-lg font-semibold mb-4">Prefeitura Municipal</h3>
+              <h3 className="text-lg font-semibold mb-4">{config.prefeituraNome}</h3>
               <p className="text-gray-300 text-sm">
-                Secretaria de Educação comprometida com a qualidade do ensino público municipal.
+                {config.secretaria} comprometida com a qualidade do ensino público municipal.
               </p>
             </div>
             <div>
@@ -174,16 +213,16 @@ const Index = () => {
             <div>
               <h3 className="text-lg font-semibold mb-4">Redes Sociais</h3>
               <div className="flex space-x-4">
-                <a href="#" className="text-gray-300 hover:text-white">
+                <a href={config.facebookUrl || '#'} className="text-gray-300 hover:text-white">
                   <Facebook className="h-6 w-6" />
                 </a>
-                <a href="#" className="text-gray-300 hover:text-white">
+                <a href={config.instagramUrl || '#'} className="text-gray-300 hover:text-white">
                   <Instagram className="h-6 w-6" />
                 </a>
-                <a href="#" className="text-gray-300 hover:text-white">
+                <a href={config.twitterUrl || '#'} className="text-gray-300 hover:text-white">
                   <Twitter className="h-6 w-6" />
                 </a>
-                <a href="#" className="text-gray-300 hover:text-white">
+                <a href={config.youtubeUrl || '#'} className="text-gray-300 hover:text-white">
                   <Youtube className="h-6 w-6" />
                 </a>
               </div>
@@ -191,7 +230,7 @@ const Index = () => {
           </div>
           <div className="border-t border-gray-700 mt-8 pt-8 text-center">
             <p className="text-sm text-gray-400">
-              © 2024 Prefeitura Municipal. Todos os direitos reservados.
+              {config.copyright}
             </p>
           </div>
         </div>

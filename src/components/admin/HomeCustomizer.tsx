@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -23,6 +23,19 @@ const HomeCustomizer = () => {
     youtubeUrl: '#'
   });
 
+  // Carregar configurações salvas quando o componente for montado
+  useEffect(() => {
+    const savedConfig = localStorage.getItem('homeCustomization');
+    if (savedConfig) {
+      try {
+        const parsedConfig = JSON.parse(savedConfig);
+        setConfig(parsedConfig);
+      } catch (error) {
+        console.error('Erro ao carregar configurações da home:', error);
+      }
+    }
+  }, []);
+
   const handleInputChange = (field: string, value: string) => {
     setConfig(prev => ({
       ...prev,
@@ -32,6 +45,8 @@ const HomeCustomizer = () => {
 
   const handleSave = () => {
     localStorage.setItem('homeCustomization', JSON.stringify(config));
+    // Disparar evento para notificar outras abas/componentes
+    window.dispatchEvent(new CustomEvent('homeConfigUpdated', { detail: config }));
     toast({
       title: "Configurações salvas",
       description: "As alterações da home foram salvas com sucesso!",
